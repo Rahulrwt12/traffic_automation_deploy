@@ -59,51 +59,51 @@ class BrowserManager:
     async def start(self):
         """Start browser instance"""
         try:
-        # Check if browsers are installed (helpful for Docker/Render debugging)
-        # Render uses /opt/render/.cache/ms-playwright, Docker uses /ms-playwright
-        browsers_path = os.environ.get('PLAYWRIGHT_BROWSERS_PATH')
+            # Check if browsers are installed (helpful for Docker/Render debugging)
+            # Render uses /opt/render/.cache/ms-playwright, Docker uses /ms-playwright
+            browsers_path = os.environ.get('PLAYWRIGHT_BROWSERS_PATH')
 
-        # Treat blank or sentinel values ("0") as "unset", but try local cache first
-        sentinel_values = {'', '0', 'None', None}
-        if browsers_path in sentinel_values:
-            # Prefer the current working directory install when Playwright was run with PLAYWRIGHT_BROWSERS_PATH=0
-            cwd_candidate = os.path.join(os.getcwd(), 'ms-playwright')
-            if os.path.exists(cwd_candidate):
-                browsers_path = cwd_candidate
-                os.environ['PLAYWRIGHT_BROWSERS_PATH'] = browsers_path
-            else:
-                browsers_path = None
-                # Try to detect environment
-                if os.path.exists('/opt/render'):
-                    # Render environment
-                    candidate_paths = [
-                        '/opt/render/project/src/ms-playwright',
-                        '/opt/render/project/src/.cache/ms-playwright',
-                        '/opt/render/project/.cache/ms-playwright',
-                        '/opt/render/.cache/ms-playwright'
-                    ]
-                    for candidate in candidate_paths:
-                        if os.path.exists(candidate):
-                            browsers_path = candidate
-                            break
-                    if browsers_path:
-                        os.environ['PLAYWRIGHT_BROWSERS_PATH'] = browsers_path
-                elif os.path.exists('/.dockerenv') or os.path.exists('/app/.dockerenv'):
-                    # Docker environment
-                    browsers_path = '/ms-playwright'
-                    # Set environment variable for Playwright to use
+            # Treat blank or sentinel values ("0") as "unset", but try local cache first
+            sentinel_values = {'', '0', 'None', None}
+            if browsers_path in sentinel_values:
+                # Prefer the current working directory install when Playwright was run with PLAYWRIGHT_BROWSERS_PATH=0
+                cwd_candidate = os.path.join(os.getcwd(), 'ms-playwright')
+                if os.path.exists(cwd_candidate):
+                    browsers_path = cwd_candidate
                     os.environ['PLAYWRIGHT_BROWSERS_PATH'] = browsers_path
                 else:
-                    # Default location - detect OS
-                    import platform
-                    system = platform.system()
-                    if system == 'Darwin':  # macOS
-                        browsers_path = os.path.expanduser('~/Library/Caches/ms-playwright')
-                    elif system == 'Windows':
-                        browsers_path = os.path.expanduser('~/AppData/Local/ms-playwright')
-                    else:  # Linux and others
-                        browsers_path = os.path.expanduser('~/.cache/ms-playwright')
-            
+                    browsers_path = None
+                    # Try to detect environment
+                    if os.path.exists('/opt/render'):
+                        # Render environment
+                        candidate_paths = [
+                            '/opt/render/project/src/ms-playwright',
+                            '/opt/render/project/src/.cache/ms-playwright',
+                            '/opt/render/project/.cache/ms-playwright',
+                            '/opt/render/.cache/ms-playwright'
+                        ]
+                        for candidate in candidate_paths:
+                            if os.path.exists(candidate):
+                                browsers_path = candidate
+                                break
+                        if browsers_path:
+                            os.environ['PLAYWRIGHT_BROWSERS_PATH'] = browsers_path
+                    elif os.path.exists('/.dockerenv') or os.path.exists('/app/.dockerenv'):
+                        # Docker environment
+                        browsers_path = '/ms-playwright'
+                        # Set environment variable for Playwright to use
+                        os.environ['PLAYWRIGHT_BROWSERS_PATH'] = browsers_path
+                    else:
+                        # Default location - detect OS
+                        import platform
+                        system = platform.system()
+                        if system == 'Darwin':  # macOS
+                            browsers_path = os.path.expanduser('~/Library/Caches/ms-playwright')
+                        elif system == 'Windows':
+                            browsers_path = os.path.expanduser('~/AppData/Local/ms-playwright')
+                        else:  # Linux and others
+                            browsers_path = os.path.expanduser('~/.cache/ms-playwright')
+
             if browsers_path and not os.path.exists(browsers_path):
                 # As a last resort, check common Playwright install locations
                 fallback_candidates = [
