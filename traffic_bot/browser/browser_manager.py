@@ -3,7 +3,10 @@ import asyncio
 import logging
 import os
 import random
+from pathlib import Path
 from typing import Optional, Dict, Any, List
+
+import playwright
 from playwright.async_api import async_playwright, Browser, BrowserContext, Page, Playwright
 from .fingerprint import FingerprintGenerator
 from .interaction import UserBehavior
@@ -110,11 +113,16 @@ class BrowserManager:
                     os.path.join(os.getcwd(), 'ms-playwright'),
                     '/ms-playwright',
                     os.path.expanduser('~/.cache/ms-playwright'),
+                    # Playwright's bundled driver cache (when PLAYWRIGHT_BROWSERS_PATH is unset)
+                    Path(playwright.__file__).resolve().parent / 'driver' / 'package' / '.local-browsers',
                 ]
                 for candidate in fallback_candidates:
-                    if candidate and os.path.exists(candidate):
-                        browsers_path = candidate
-                        os.environ['PLAYWRIGHT_BROWSERS_PATH'] = candidate
+                    if not candidate:
+                        continue
+                    candidate_path = Path(candidate)
+                    if candidate_path.exists():
+                        browsers_path = str(candidate_path)
+                        os.environ['PLAYWRIGHT_BROWSERS_PATH'] = browsers_path
                         break
 
             if browsers_path and os.path.exists(browsers_path):
