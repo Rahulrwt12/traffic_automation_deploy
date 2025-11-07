@@ -59,18 +59,26 @@ class BrowserManager:
     async def start(self):
         """Start browser instance"""
         try:
-            # Check if browsers are installed (helpful for Docker/Render debugging)
-            # Render uses /opt/render/.cache/ms-playwright, Docker uses /ms-playwright
-            browsers_path = os.environ.get('PLAYWRIGHT_BROWSERS_PATH')
+        # Check if browsers are installed (helpful for Docker/Render debugging)
+        # Render uses /opt/render/.cache/ms-playwright, Docker uses /ms-playwright
+        browsers_path = os.environ.get('PLAYWRIGHT_BROWSERS_PATH')
 
-            # Treat blank or sentinel values ("0") as "unset"
-            if not browsers_path or browsers_path == '0':
+        # Treat blank or sentinel values ("0") as "unset", but try local cache first
+        sentinel_values = {'', '0', 'None', None}
+        if browsers_path in sentinel_values:
+            # Prefer the current working directory install when Playwright was run with PLAYWRIGHT_BROWSERS_PATH=0
+            cwd_candidate = os.path.join(os.getcwd(), 'ms-playwright')
+            if os.path.exists(cwd_candidate):
+                browsers_path = cwd_candidate
+                os.environ['PLAYWRIGHT_BROWSERS_PATH'] = browsers_path
+            else:
                 browsers_path = None
                 # Try to detect environment
                 if os.path.exists('/opt/render'):
                     # Render environment
                     candidate_paths = [
                         '/opt/render/project/src/ms-playwright',
+                        '/opt/render/project/src/.cache/ms-playwright',
                         '/opt/render/project/.cache/ms-playwright',
                         '/opt/render/.cache/ms-playwright'
                     ]
@@ -100,6 +108,7 @@ class BrowserManager:
                 # As a last resort, check common Playwright install locations
                 fallback_candidates = [
                     os.path.join(os.getcwd(), 'ms-playwright'),
+                    '/ms-playwright',
                     os.path.expanduser('~/.cache/ms-playwright'),
                 ]
                 for candidate in fallback_candidates:
