@@ -65,6 +65,7 @@ class BrowserManager:
 
             # Treat blank or sentinel values ("0") as "unset"
             if not browsers_path or browsers_path == '0':
+                browsers_path = None
                 # Try to detect environment
                 if os.path.exists('/opt/render'):
                     # Render environment
@@ -77,10 +78,8 @@ class BrowserManager:
                         if os.path.exists(candidate):
                             browsers_path = candidate
                             break
-                    else:
-                        # Default to Render cache so Playwright installs here next run
-                        browsers_path = '/opt/render/.cache/ms-playwright'
-                    os.environ['PLAYWRIGHT_BROWSERS_PATH'] = browsers_path
+                    if browsers_path:
+                        os.environ['PLAYWRIGHT_BROWSERS_PATH'] = browsers_path
                 elif os.path.exists('/.dockerenv') or os.path.exists('/app/.dockerenv'):
                     # Docker environment
                     browsers_path = '/ms-playwright'
@@ -97,7 +96,7 @@ class BrowserManager:
                     else:  # Linux and others
                         browsers_path = os.path.expanduser('~/.cache/ms-playwright')
             
-            if not os.path.exists(browsers_path):
+            if browsers_path and not os.path.exists(browsers_path):
                 # As a last resort, check common Playwright install locations
                 fallback_candidates = [
                     os.path.join(os.getcwd(), 'ms-playwright'),
@@ -109,24 +108,16 @@ class BrowserManager:
                         os.environ['PLAYWRIGHT_BROWSERS_PATH'] = candidate
                         break
 
-            if not os.path.exists(browsers_path):
-                logger.warning(f"⚠️  Playwright browsers path not found: {browsers_path}")
-                logger.warning("   This may cause browser startup failures.")
-                if os.path.exists('/opt/render'):
-                    logger.warning("   Render environment detected - ensure build.sh installs browsers")
-                elif os.path.exists('/.dockerenv'):
-                    logger.warning("   Docker environment detected - ensure Dockerfile installs browsers")
-                else:
-                    import platform
-                    system = platform.system()
-                    if system == 'Darwin':  # macOS
-                        logger.warning(f"   Run: playwright install {self.browser_type}")
-                    elif system == 'Windows':
-                        logger.warning(f"   Run: playwright install {self.browser_type}")
-                    else:  # Linux
-                        logger.warning(f"   Run: playwright install {self.browser_type}")
-            else:
+            if browsers_path and os.path.exists(browsers_path):
                 logger.debug(f"✅ Playwright browsers found at: {browsers_path}")
+            else:
+                logger.warning("⚠️  Playwright browsers cache not found on disk.")
+                if os.path.exists('/opt/render'):
+                    logger.warning("   Render environment detected - ensure build command runs 'python -m playwright install' during deployment.")
+                elif os.path.exists('/.dockerenv'):
+                    logger.warning("   Docker environment detected - install browsers in Docker image.")
+                else:
+                    logger.warning(f"   Run locally: playwright install {self.browser_type}")
             
             self.playwright = await async_playwright().start()
             
