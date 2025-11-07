@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: traffic-automation
+    env: python
+    plan: standard
+    runtime: python
+    branch: main
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+      python -m playwright install chromium
+    startCommand: >-
+      streamlit run app.py
+      --server.port $PORT
+      --server.address 0.0.0.0
+      --server.headless true
+      --browser.serverAddress 0.0.0.0
+      --browser.gatherUsageStats false
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.6
+      - key: PLAYWRIGHT_BROWSERS_PATH
+        value: "0"
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: "5432"
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: PROXY_API_KEY
+        sync: false
+      - key: BROWSER_AUTH_USERNAME
+        sync: false
+      - key: BROWSER_AUTH_PASSWORD
+        sync: false
+

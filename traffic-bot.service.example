@@ -1,0 +1,121 @@
+# ============================================================================
+# Traffic Automation - Systemd Service File (EXAMPLE)
+# ============================================================================
+# This is a template for running Traffic Bot as a systemd service
+# 
+# Installation:
+# 1. Copy this file: sudo cp traffic-bot.service.example /etc/systemd/system/traffic-bot.service
+# 2. Edit the file: sudo nano /etc/systemd/system/traffic-bot.service
+# 3. Replace placeholders: YOUR_USERNAME, /path/to/project
+# 4. Reload systemd: sudo systemctl daemon-reload
+# 5. Enable service: sudo systemctl enable traffic-bot
+# 6. Start service: sudo systemctl start traffic-bot
+# 7. Check status: sudo systemctl status traffic-bot
+# 8. View logs: sudo journalctl -u traffic-bot -f
+
+[Unit]
+Description=Traffic Automation Bot - Web Traffic Generation System
+Documentation=https://github.com/yourorg/traffic-automation
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+
+# User and Group (CHANGE THESE)
+User=YOUR_USERNAME
+Group=YOUR_USERNAME
+
+# Working directory (CHANGE THIS)
+WorkingDirectory=/path/to/Traffic_automation_Deploy
+
+# Environment
+Environment="PATH=/path/to/Traffic_automation_Deploy/venv/bin:/usr/local/bin:/usr/bin:/bin"
+Environment="PYTHONUNBUFFERED=1"
+
+# Load environment variables from .env file
+EnvironmentFile=/path/to/Traffic_automation_Deploy/.env
+
+# Start command
+ExecStart=/path/to/Traffic_automation_Deploy/venv/bin/streamlit run app.py \
+    --server.port=8501 \
+    --server.address=0.0.0.0 \
+    --server.headless=true \
+    --server.runOnSave=false \
+    --browser.serverAddress=0.0.0.0 \
+    --browser.gatherUsageStats=false
+
+# Restart policy
+Restart=always
+RestartSec=10
+
+# Timeouts
+TimeoutStartSec=60
+TimeoutStopSec=30
+
+# Resource limits (adjust based on your server)
+LimitNOFILE=65536
+LimitNPROC=4096
+
+# Memory limit (adjust based on concurrent proxies)
+# For 50 concurrent: ~8GB, for 100 concurrent: ~16GB
+# MemoryMax=8G
+# MemoryHigh=7G
+
+# Kill mode
+KillMode=mixed
+KillSignal=SIGTERM
+
+# Security settings (optional but recommended)
+PrivateTmp=true
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/path/to/Traffic_automation_Deploy
+
+# Standard output and error
+StandardOutput=append:/path/to/Traffic_automation_Deploy/logs/service.log
+StandardError=append:/path/to/Traffic_automation_Deploy/logs/service-error.log
+
+[Install]
+WantedBy=multi-user.target
+
+# ============================================================================
+# USAGE INSTRUCTIONS
+# ============================================================================
+#
+# Start service:      sudo systemctl start traffic-bot
+# Stop service:       sudo systemctl stop traffic-bot
+# Restart service:    sudo systemctl restart traffic-bot
+# View status:        sudo systemctl status traffic-bot
+# Enable on boot:     sudo systemctl enable traffic-bot
+# Disable on boot:    sudo systemctl disable traffic-bot
+#
+# View logs:          sudo journalctl -u traffic-bot -f
+# View last 100:      sudo journalctl -u traffic-bot -n 100
+# View today's logs:  sudo journalctl -u traffic-bot --since today
+# View errors:        sudo journalctl -u traffic-bot -p err
+#
+# ============================================================================
+# TROUBLESHOOTING
+# ============================================================================
+#
+# Service won't start:
+#   1. Check paths are correct: WorkingDirectory, ExecStart
+#   2. Verify user has permissions: sudo -u YOUR_USERNAME ls -la /path/to/project
+#   3. Test command manually: sudo -u YOUR_USERNAME /path/to/start.sh
+#   4. Check logs: sudo journalctl -u traffic-bot -n 50
+#
+# Service crashes:
+#   1. Check memory: free -h
+#   2. Check disk space: df -h
+#   3. Review logs: sudo journalctl -u traffic-bot -p err
+#   4. Reduce concurrent proxies in config.json
+#
+# Permission errors:
+#   1. Fix ownership: sudo chown -R YOUR_USERNAME:YOUR_USERNAME /path/to/project
+#   2. Fix permissions: chmod 755 /path/to/project
+#   3. Verify .env exists: ls -la /path/to/project/.env
+#
+# ============================================================================
+

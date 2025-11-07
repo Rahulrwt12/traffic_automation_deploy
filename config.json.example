@@ -1,0 +1,141 @@
+{
+  "_comment": "IMPORTANT: For API keys and sensitive credentials, use environment variables in .env file",
+  "_comment2": "See .env.example for available environment variables",
+  "excel_file": "advanced_energy_products_dynamic.xlsx",
+  "product_url_column": "Product URL",
+  "mode": "batch",
+  "delay_minutes": 5,
+  "target_domain": "www-qa.advancedenergy.com",
+  "min_delay_seconds": 120,
+  "max_retries": 3,
+  "timeout_seconds": 30,
+  "enable_proxy_rotation": true,
+  "proxy_file": "proxies.json",
+  "log_file": "traffic_bot.log",
+  "log_level": "INFO",
+  "read_columns": [
+    "Product URL",
+    "product_url",
+    "Product Url",
+    "URL",
+    "url",
+    "Link",
+    "link"
+  ],
+  "proxy_api": {
+    "enabled": true,
+    "api_key": "",
+    "api_type": "webshare",
+    "api_endpoint": "https://proxy.webshare.io/api/v2/proxy/list/",
+    "max_proxies": 100,
+    "proxy_format": "http://username:password@ip:port",
+    "alternatives": {
+      "smartproxy": "https://api.smartproxy.com/v1/endpoint",
+      "brightdata": "http://zproxy.lum-superproxy.io:22225",
+      "oxylabs": "http://customer-USERNAME:PASSWORD@pr.oxylabs.io:7777"
+    }
+  },
+  "proxy_rotation": {
+    "strategy": "smart",
+    "health_check": true,
+    "health_check_timeout": 5,
+    "max_failures_before_remove": 3,
+    "consecutive_failures_before_remove": 3,
+    "failure_rate_threshold": 0.7,
+    "retry_with_different_proxy": true,
+    "fallback_to_direct": true,
+    "auto_remove_failing_proxies": true,
+    "validate_at_startup": true,
+    "validation_timeout": 10,
+    "validation_test_url": "https://www.google.com"
+  },
+  "speed_mode": "fast",
+  "batch_mode": {
+    "enabled": true,
+    "delay_between_urls_seconds": 7,
+    "delay_variation_seconds": 4,
+    "reading_time_min": 3,
+    "reading_time_max": 8,
+    "pre_request_delay_min": 1,
+    "pre_request_delay_max": 3,
+    "shuffle_urls": true,
+    "batch_size": null,
+    "delay_between_batches_seconds": 0
+  },
+  "parallel_mode": {
+    "enabled": true,
+    "max_concurrent_proxies": 25,
+    "distribution": "round-robin",
+    "show_ip_in_logs": true,
+    "automated_batches": {
+      "enabled": true,
+      "proxies_per_batch": 25,
+      "delay_between_batches_minutes": 45,
+      "delay_variation_minutes": 15
+    }
+  },
+  "track_traffic": true,
+  "traffic_log_file": "traffic_history.json",
+  "traffic_stats_file": "traffic_stats.json",
+  "browser": {
+    "headless": true,
+    "browser_type": "firefox",
+    "timeout": 30000,
+    "wait_until": "networkidle",
+    "stealth_mode": true,
+    "fingerprint_randomization": true,
+    "authentication": {
+      "enabled": false,
+      "username": "",
+      "password": "",
+      "domain": "www-qa.advancedenergy.com"
+    }
+  },
+  "behavior": {
+    "mouse_movements": true,
+    "scrolling": true,
+    "click_interactions": true,
+    "scroll_pattern": "progressive",
+    "mouse_movement_chance": 0.7,
+    "click_chance": 0.3,
+    "scroll_delay_min": 0.5,
+    "scroll_delay_max": 2.0
+  },
+  "cookies": {
+    "enabled": true,
+    "persist_cookies": true,
+    "cookie_file": "cookies.json",
+    "returning_user_ratio": 0.3
+  },
+  "resource_monitoring": {
+    "enabled": true,
+    "check_interval_seconds": 30,
+    "max_memory_percent": 85,
+    "max_cpu_percent": 90,
+    "alert_on_high_usage": true
+  },
+  "advanced_stealth": {
+    "enabled": true,
+    "mask_canvas": true,
+    "mask_webgl": true,
+    "randomize_headers": true,
+    "humanize_timing": true
+  },
+  "throttling": {
+    "enabled": true,
+    "requests_per_minute": 30,
+    "requests_per_second": 2,
+    "burst_size": 5,
+    "adaptive_delays": true,
+    "per_domain_limit": true,
+    "domain_requests_per_minute": 10
+  },
+  "memory_optimization": {
+    "enabled": true,
+    "browser_pool_size": 5,
+    "max_browser_idle_time_seconds": 300,
+    "cleanup_interval_seconds": 60,
+    "force_gc_after_cleanup": true
+  }
+}
+

@@ -1,0 +1,97 @@
+# ============================================================================
+# Traffic Automation Tool - Requirements
+# ============================================================================
+# PRODUCTION-READY: All versions pinned for stability and reproducibility
+# Install with: pip install -r requirements.txt
+# Then install browsers: playwright install chromium
+# Run application: streamlit run app.py
+
+# ============================================================================
+# Core Traffic Bot Dependencies
+# ============================================================================
+# Data processing and Excel handling
+pandas==2.1.4
+openpyxl==3.1.2
+xlrd==2.0.1
+
+# HTTP requests and networking
+requests==2.31.0
+urllib3==2.1.0
+
+# Browser automation (CRITICAL: Install browsers after pip install)
+playwright==1.40.0
+
+# System monitoring and resource management
+psutil==5.9.6
+
+# ============================================================================
+# Web Application Dependencies (Streamlit Dashboard)
+# ============================================================================
+# Web framework
+streamlit==1.29.0
+
+# Data visualization
+plotly==5.18.0
+
+# Configuration validation and schema
+pydantic==2.5.2
+
+# Environment variable management (CRITICAL for production)
+python-dotenv==1.0.0
+
+# ============================================================================
+# Database Dependencies (PostgreSQL)
+# ============================================================================
+# PostgreSQL database adapter
+psycopg2-binary==2.9.9
+
+# ORM and database toolkit
+SQLAlchemy==2.0.23
+
+# Database connection pooling (included in SQLAlchemy but explicit for clarity)
+# Connection pooling improves performance for concurrent operations
+
+# ============================================================================
+# IMPORTANT NOTES FOR DEPLOYMENT
+# ============================================================================
+#
+# 1. AFTER pip install, run these commands:
+#    playwright install chromium
+#    playwright install-deps chromium
+#
+# 2. For headless mode in production, Chromium is more stable than Firefox
+#
+# 3. System dependencies (Linux/Ubuntu):
+#    - libglib2.0-0
+#    - libnss3
+#    - libnspr4
+#    - libatk1.0-0
+#    - libatk-bridge2.0-0
+#    - libcups2
+#    - libdrm2
+#    - libxkbcommon0
+#    - libxcomposite1
+#    - libxdamage1
+#    - libxfixes3
+#    - libxrandr2
+#    - libgbm1
+#    - libasound2
+#
+# 4. Memory requirements:
+#    - Base Python + dependencies: ~500MB
+#    - Streamlit app: ~200MB
+#    - Each Chromium browser: ~200-400MB
+#    - Recommended: 8GB+ RAM for 50 concurrent browsers
+#
+# 5. Performance optimization:
+#    - Use browser pooling (already implemented)
+#    - Enable memory cleanup (already configured)
+#    - Monitor resource usage via built-in monitoring
+#
+# 6. Security:
+#    - Use .env file for ALL secrets (never commit .env)
+#    - Set PROXY_API_KEY environment variable
+#    - Set BROWSER_AUTH_USERNAME and BROWSER_AUTH_PASSWORD
+#
+# 7. To run in production:
+#    streamlit run app.py --server.port=$PORT --server.address=0.0.0.0

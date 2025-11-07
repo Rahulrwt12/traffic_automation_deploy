@@ -1,0 +1,178 @@
+{
+  "excel_file": "uploaded_advanced_energy_products_dynamic.xlsx",
+  "product_url_column": "Product URL",
+  "read_columns": [
+    "Product URL",
+    "product_url",
+    "Product Url",
+    "URL",
+    "url",
+    "Link",
+    "link"
+  ],
+  "mode": "parallel_batches",
+  "delay_minutes": 5.0,
+  "target_domain": "www-qa.advancedenergy.com",
+  "min_delay_seconds": 120.0,
+  "max_retries": 3,
+  "timeout_seconds": 30.0,
+  "enable_proxy_rotation": true,
+  "proxy_file": "proxies.json",
+  "log_file": "traffic_bot.log",
+  "log_level": "INFO",
+  "track_traffic": true,
+  "traffic_log_file": "traffic_history.json",
+  "traffic_stats_file": "traffic_stats.json",
+  "speed_mode": "fast",
+  "batch_mode": {
+    "enabled": true,
+    "delay_between_urls_seconds": 1.5,
+    "delay_variation_seconds": 1.0,
+    "reading_time_min": 3.0,
+    "reading_time_max": 8.0,
+    "pre_request_delay_min": 1.0,
+    "pre_request_delay_max": 2.0,
+    "shuffle_urls": true,
+    "batch_size": null,
+    "delay_between_batches_seconds": 0.0
+  },
+  "parallel_mode": {
+    "enabled": true,
+    "max_concurrent_proxies": 10,
+    "distribution": "round-robin",
+    "show_ip_in_logs": false,
+    "automated_batches": {
+      "enabled": true,
+      "proxies_per_batch": 10,
+      "delay_between_batches_minutes": 10.0,
+      "delay_variation_minutes": 2.0
+    }
+  },
+  "proxy_api": {
+    "enabled": true,
+    "api_key": "",
+    "api_type": "webshare",
+    "api_endpoint": "https://proxy.webshare.io/api/v2/proxy/list/",
+    "max_proxies": 100,
+    "proxy_format": "http://username:password@ip:port",
+    "alternatives": {
+      "smartproxy": "https://api.smartproxy.com/v1/endpoint",
+      "brightdata": "http://zproxy.lum-superproxy.io:22225",
+      "oxylabs": "http://customer-USERNAME:PASSWORD@pr.oxylabs.io:7777"
+    }
+  },
+  "proxy_rotation": {
+    "strategy": "smart",
+    "health_check": true,
+    "health_check_timeout": 5.0,
+    "max_failures_before_remove": 3,
+    "consecutive_failures_before_remove": 3,
+    "failure_rate_threshold": 0.7,
+    "retry_with_different_proxy": true,
+    "fallback_to_direct": false,
+    "auto_remove_failing_proxies": true,
+    "validate_at_startup": true,
+    "validation_timeout": 10.0,
+    "validation_test_url": "https://www.google.com"
+  },
+  "browser": {
+    "headless": true,
+    "browser_type": "firefox",
+    "timeout": 30000,
+    "wait_until": "load",
+    "stealth_mode": true,
+    "fingerprint_randomization": true,
+    "viewport_width": null,
+    "viewport_height": null,
+    "user_agent": null,
+    "authentication": {
+      "enabled": false,
+      "username": "",
+      "password": "",
+      "domain": "www-qa.advancedenergy.com"
+    }
+  },
+  "behavior": {
+    "mouse_movements": true,
+    "scrolling": true,
+    "click_interactions": true,
+    "scroll_pattern": "progressive",
+    "mouse_movement_chance": 0.7,
+    "click_chance": 0.3,
+    "scroll_delay_min": 0.5,
+    "scroll_delay_max": 2.0
+  },
+  "cookies": {
+    "enabled": true,
+    "persist_cookies": true,
+    "cookie_file": "cookies.json",
+    "returning_user_ratio": 0.3
+  },
+  "resource_monitoring": {
+    "enabled": true,
+    "check_interval_seconds": 30,
+    "max_memory_percent": 85.0,
+    "max_cpu_percent": 90.0,
+    "alert_on_high_usage": true
+  },
+  "advanced_stealth": {
+    "enabled": true,
+    "mask_canvas": true,
+    "mask_webgl": true,
+    "randomize_headers": true,
+    "humanize_timing": true
+  },
+  "throttling": {
+    "enabled": true,
+    "requests_per_minute": 60,
+    "requests_per_second": 2.0,
+    "burst_size": 10,
+    "adaptive_delays": true,
+    "per_domain_limit": true,
+    "domain_requests_per_minute": 20
+  },
+  "memory_optimization": {
+    "enabled": true,
+    "browser_pool_size": 10,
+    "max_browser_idle_time_seconds": 300,
+    "cleanup_interval_seconds": 60,
+    "force_gc_after_cleanup": true
+  },
+  "_comment": "============================================================================",
+  "_comment2": "Traffic Automation - PRODUCTION-READY Configuration",
+  "_comment3": "============================================================================",
+  "_comment4": "IMPORTANT: Sensitive values are now loaded from .env file",
+  "_comment5": "See .env.example for required environment variables",
+  "_comment6": "This configuration is optimized for 8GB RAM with 100 proxies / 50 concurrent",
+  "_comment7": "============================================================================",
+  "_section": "============================================================================",
+  "_batch_mode_comment": "Batch Mode: Sequential URL visits with delays (good for testing)",
+  "_parallel_mode_comment": "Parallel Mode: OPTIMIZED for 100 proxies / 50 concurrent on 8GB RAM",
+  "_parallel_note": "Each browser uses ~200-400MB, 50 concurrent = ~10-20GB peak (browser reuse helps)",
+  "_proxy_api_comment": "Proxy API: Loads from PROXY_API_KEY environment variable",
+  "_proxy_api_note": "NEVER commit api_key to Git - use .env file",
+  "_proxy_rotation_comment": "Proxy Rotation: Smart rotation with health checks and auto-removal",
+  "_browser_comment": "Browser: PRODUCTION - Use Chromium headless for stability",
+  "_browser_note": "Credentials loaded from BROWSER_AUTH_USERNAME and BROWSER_AUTH_PASSWORD env vars",
+  "_behavior_comment": "Behavior: Human-like interaction simulation",
+  "_cookies_comment": "Cookies: Persistent storage for returning user simulation",
+  "_resource_monitoring_comment": "Resource Monitoring: CRITICAL for 8GB RAM server",
+  "_resource_note": "Alerts when memory > 85% or CPU > 90%",
+  "_stealth_comment": "Advanced Stealth: Enhanced bot detection avoidance",
+  "_throttling_comment": "Throttling: Prevents overwhelming target servers",
+  "_memory_optimization_comment": "Memory Optimization: CRITICAL for 8GB server with 50 concurrent browsers",
+  "_memory_note": "Browser pool reuses instances to reduce memory footprint",
+  "_shutdown_comment": "Shutdown: Graceful cleanup timeouts",
+  "shutdown_timeout_seconds": 30.0,
+  "execution_timeout_seconds": 86400,
+  "_database_comment": "============================================================================",
+  "_database_note": "PostgreSQL Database Configuration (OPTIONAL - falls back to JSON if disabled)",
+  "_database_info": "Enable for production: persistent data, better performance, analytics",
+  "database": {
+    "enabled": true,
+    "url": "",
+    "pool_size": 10,
+    "max_overflow": 20,
+    "pool_recycle": 3600
+  }
+}
