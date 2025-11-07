@@ -62,12 +62,24 @@ class BrowserManager:
             # Check if browsers are installed (helpful for Docker/Render debugging)
             # Render uses /opt/render/.cache/ms-playwright, Docker uses /ms-playwright
             browsers_path = os.environ.get('PLAYWRIGHT_BROWSERS_PATH')
-            if not browsers_path:
+
+            # Treat blank or sentinel values ("0") as "unset"
+            if not browsers_path or browsers_path == '0':
                 # Try to detect environment
                 if os.path.exists('/opt/render'):
                     # Render environment
-                    browsers_path = '/opt/render/.cache/ms-playwright'
-                    # Set environment variable for Playwright to use
+                    candidate_paths = [
+                        '/opt/render/project/src/ms-playwright',
+                        '/opt/render/project/.cache/ms-playwright',
+                        '/opt/render/.cache/ms-playwright'
+                    ]
+                    for candidate in candidate_paths:
+                        if os.path.exists(candidate):
+                            browsers_path = candidate
+                            break
+                    else:
+                        # Default to Render cache so Playwright installs here next run
+                        browsers_path = '/opt/render/.cache/ms-playwright'
                     os.environ['PLAYWRIGHT_BROWSERS_PATH'] = browsers_path
                 elif os.path.exists('/.dockerenv') or os.path.exists('/app/.dockerenv'):
                     # Docker environment
@@ -85,6 +97,18 @@ class BrowserManager:
                     else:  # Linux and others
                         browsers_path = os.path.expanduser('~/.cache/ms-playwright')
             
+            if not os.path.exists(browsers_path):
+                # As a last resort, check common Playwright install locations
+                fallback_candidates = [
+                    os.path.join(os.getcwd(), 'ms-playwright'),
+                    os.path.expanduser('~/.cache/ms-playwright'),
+                ]
+                for candidate in fallback_candidates:
+                    if candidate and os.path.exists(candidate):
+                        browsers_path = candidate
+                        os.environ['PLAYWRIGHT_BROWSERS_PATH'] = candidate
+                        break
+
             if not os.path.exists(browsers_path):
                 logger.warning(f"⚠️  Playwright browsers path not found: {browsers_path}")
                 logger.warning("   This may cause browser startup failures.")
